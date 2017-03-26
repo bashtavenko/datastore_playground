@@ -65,7 +65,7 @@ class DatastoreTestCase(unittest.TestCase):
        # Ask Datastore to allocate an ID.
        new_id = ndb.Model.allocate_ids(size=1, parent=account_key)[0]
 
-       import pdb; pdb.set_trace()
+       #import pdb; pdb.set_trace()
 
        # Datastore returns us an integer ID that we can use to create the message
        # key

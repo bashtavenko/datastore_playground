@@ -9,6 +9,7 @@ from google.appengine.ext import testbed
 
 import code_churn_models as models
 import code_churn_models_v2 as models_v2
+import code_churn_models_v3 as models_v3
 
 
 class CodeChurnTestCase(unittest.TestCase):
@@ -101,3 +102,25 @@ class CodeChurnTestCase(unittest.TestCase):
     # Find commit with a given sha for this repo
     commit = next((c for c in commits if c.sha == '77c087b5'), None)
     self.assertIsNotNone(commit)
+
+  def testInsertRepoAndCommitsKeyProperty(self):
+    # Insert repo with a couple of commits
+    my_repo = models_v3.Repo(id='my_repo')
+    my_repo.put()
+    models_v3.Commit(
+            sha='7c087b5',
+            committer='Washington Irving',
+            message='Initial commit',
+            repo=my_repo.key
+          ).put()
+    models_v3.Commit(
+            sha='77c087b5',
+            committer='Joe Doe',
+            message='Added readme',
+            repo=my_repo.key
+          ).put()
+
+    # Find all commits for this repo
+    repo_key = ndb.Key('Repo', 'my_repo')
+    commits = models_v3.Commit.query(models_v3.Commit.repo == repo_key).fetch()
+    self.assertEqual(2, len(commits))

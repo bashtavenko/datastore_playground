@@ -1,6 +1,6 @@
-""" Sample models.
-    Designed to work with ancestor queries. 
-    Low write throughput (1 write /sec), but consistency.
+""" Sample models. 
+    Work with KeyProperties
+    High write throughput but only eventual consistency
 """
 
 from google.appengine.ext import ndb
@@ -12,10 +12,12 @@ class Repo(ndb.Model):
 class Commit(ndb.Model):
   # Datastore will autogenerate id, although sha could be used
   # as key as well
+  repo = ndb.KeyProperty(kind=Repo)
   sha = ndb.StringProperty()
   committer = ndb.StringProperty()
   message = ndb.StringProperty()
 
 class File(ndb.Model):
+  commit = ndb.KeyProperty(kind=Commit)
   file_name = ndb.StringProperty()
   url = ndb.StringProperty()

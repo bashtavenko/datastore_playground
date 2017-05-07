@@ -6,6 +6,7 @@ from google.appengine.ext import ndb
 from google.appengine.ext import testbed
 
 import code_churn_models as models
+import code_churn_models_v2 as models_v2
 
 class CodeChurnTestCase(unittest.TestCase):
     def setUp(self):
@@ -37,26 +38,26 @@ class CodeChurnTestCase(unittest.TestCase):
         my_repo = models.Repo(id='my_repo')
         my_repo.put()
         models.Commit(
-		sha='7c087b5',
+                sha='7c087b5',
                 committer='Washington Irving',
                 message='Initial commit',
                 parent=my_repo.key
               ).put()
         models.Commit(
-		sha='77c087b5',
+                sha='77c087b5',
                 committer='Joe Doe',
                 message='Added readme',
                 parent=my_repo.key
               ).put()
 
-        # Find all commits for this repo 
+        # Find all commits for this repo
         ancestor_key = ndb.Key('Repo', 'my_repo')
         commits = models.Commit.query(ancestor=ancestor_key).fetch()
         self.assertEqual(2, len(commits))
 
         # Find commit with a given sha and its parent (repo)
         commits = models.Commit.query().filter(
-		models.Commit.sha == '77c087b5').fetch()
+          models.Commit.sha == '77c087b5').fetch()
         self.assertEqual(1, len(commits))
         self.assertEqual('my_repo', commits[0].key.parent().id())
 
@@ -71,3 +72,29 @@ class CodeChurnTestCase(unittest.TestCase):
         repos = models.Repo.query(ancestor=ancestor_key).fetch()
         self.assertEqual(2, len(repos))
 
+    def testInsertRepoAndCommitsV2(self):
+        # Insert repo with a couple of commits as StructuredProperty
+        my_repo = models_v2.Repo(
+            id='my_repo',
+            commits = [
+              models_v2.Commit(
+                      sha='7c087b5',
+                      committer='Washington Irving',
+                      message='Initial commit',
+                  ),
+              models_v2.Commit(
+                      sha='77c087b5',
+                      committer='Joe Doe',
+                      message='Added readme',
+              )])
+        my_repo.put()
+
+        # Find all commits for this repo
+        repo = models_v2.Repo.get_by_id('my_repo')
+        self.assertIsNotNone(repo)
+        commits = repo.commits
+        self.assertEqual(2, len(commits))
+
+        # Find commit with a given sha for this repo
+        commit = next((c for c in commits if c.sha == '77c087b5'), None)
+        self.assertIsNotNone(commit)

@@ -1,6 +1,8 @@
 """ Sample models.
-    Designed to work with ancestor queries. 
-    Low write throughput (1 write /sec), but consistency.
+    Designed to work with ancestor queries and entities groups.
+    Low write throughput (1 write /sec), but high consistency.
+    Entities created with parent:
+    Commit(sha='7c087b5', parent=my_repo_key)
 """
 
 from google.appengine.ext import ndb

@@ -1,6 +1,8 @@
-""" Sample models. 
-    Work with KeyProperties
+""" Sample models based on KeyProperties.
     High write throughput but only eventual consistency
+
+    Entities don't form entity groups;
+    Commit(sha='7c087b5', repo=my_repo_key)
 """
 
 from google.appengine.ext import ndb

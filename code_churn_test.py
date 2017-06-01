@@ -55,8 +55,8 @@ class CodeChurnTestCase(unittest.TestCase):
           ).put()
 
     # Find all commits for this repo
-ancestor_key = ndb.Key('Repo', 'my_repo')
-commits = models.Commit.query(ancestor=ancestor_key).fetch()
+    ancestor_key = ndb.Key('Repo', 'my_repo')
+    commits = models.Commit.query(ancestor=ancestor_key).fetch()
     self.assertEqual(2, len(commits))
 
     # Find commit with a given sha and its parent (repo)

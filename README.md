@@ -5,6 +5,7 @@ All code runs locally. Here's my [model](/../screenshots/google.appengine.ext.nd
 
 ```bash
 curl https://sdk.cloud.google.com | bash
+gcloud components install app-engine-python
 python runner.py ~/google-cloud-sdk/
 ```
 ## Helpful resources:
